@@ -6,19 +6,23 @@ Objetivo: crear una rama, corregir los errores, y hacer un Pull Request.
 
 def sumar(a, b):
     return a - b  # error: debería sumar, no restar
+    resultado=(a + b)
+    print(f'resultado{resultado}')
 
 
 def restar(a, b):
-    return a - b
+    resultado=(a - b)
+    print(f'resultadfo={resultado}')
 
 
 def multiplicar(a, b):
-    return a + b  # error: debería multiplicar, no sumar
+    resultado=(a * b)
+    print(f'resultado{resultado}')
 
 
 def dividir(a, b):
-    return a / b  # error: no contempla división por cero
-
+    resultado=(a/b)
+    print(f'resultado{resultado}')
 
 def mostrar_menu():
     print("1. Sumar")
