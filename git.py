@@ -1,0 +1,1 @@
+print('git funciona correctamente')
