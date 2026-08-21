@@ -13,8 +13,7 @@ elif actividad_a_ejecutar == 2:
             print('usted ah desaprobado')
 elif actividad_a_ejecutar == 3:
     numero=int(input('ingrese un numero'))
-    numero= numero/2
-    if numero == 0:
+    if numero % 2 == 0:
         print('el numero ingresado es par')
     else:
         print('el numero ingresado es impar')
@@ -43,12 +42,12 @@ elif actividad_a_ejecutar == 6:
     media=(mean(mi_lista))
     moda=(mode(mi_lista))
     mediana=(median(mi_lista))
-    if media < mediana > moda:
+    if media > mediana and mediana > moda:
         print('sesgo positivo')
-    elif moda >mediana > media:
+    elif moda > mediana and mediana > media:
         print('sesgo negativo')
-    elif moda == mediana == media:
-        print('la lista no presenta sesgo')
+    else:
+        print('la lista no presenta un sesgo claro')
 
 elif actividad_a_ejecutar == 7:
     frase=input('inrgese una frase o palabra')
@@ -86,7 +85,33 @@ elif actividad_a_ejecutar == 9:
             print('el temblor fue fuerte')
         elif 6 <= magnitud < 7:
             print('el temblor fue muy fuerte')
-        elif magnitud > 7:
+        elif magnitud >= 7:
             print('terremoto de magnitud extrema')
-# elif actividad_a_ejecutar == 10:
-    
+elif actividad_a_ejecutar == 10:
+    dia=int(input('ingrese el dia en el que se encuentra'))
+    mes=int(input('ingrese el numero del mes en el que se encuentre'))
+    hemisferio=input('ingrese el hemisferio en el que se encunetra').capitalize()
+    fecha=mes*100+dia
+    if 321 <= fecha <= 620:
+        if hemisferio == 'N':
+            print('usted esta en primavera')
+        elif hemisferio == 'S':
+            print('usted esta en otoño')
+    elif 621 <= fecha <= 920:
+        if hemisferio == 'N':
+            print('usted esta en verano')
+        elif hemisferio == 'S':
+            print('usted esta en invierno')
+    elif 921 <= fecha <= 1220:
+        if hemisferio == 'N':
+            print('usted esta en otoño')
+        elif hemisferio == 'S':
+            print('usted esta en primavera')
+    else:
+        if hemisferio == 'N':
+            print('usted esta en invierno')
+        elif hemisferio == 'S':
+            print('usted esta en verano')
+
+else:
+    print('ingrese una opcion valida par eso')
