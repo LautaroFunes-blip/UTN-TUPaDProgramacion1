@@ -1,0 +1,53 @@
+ejecricio_ejecutar=None
+while True:
+    ejecricio_ejecutar=int(input('ingrese el numero de ejecricio que desea ejecutar'))
+    if ejecricio_ejecutar == 1:
+        lista_numero=[]
+        for i in range(4,101, 4):
+            lista_numero.append(i)
+        print(lista_numero)
+    elif ejecricio_ejecutar == 2:
+        lista=['elemento_0', '1', '2', '3', '4']
+        print(lista[-2])
+    elif ejecricio_ejecutar == 3:
+        lista_palabras=[]
+        for i in range(3):
+            palabra=input('ingrese las palabras a ingresar')
+            lista_palabras.append(palabra)
+        print(lista_palabras)
+    elif ejecricio_ejecutar == 4:
+        animales = ["perro", "gato", "conejo", "pez"]
+        print(animales)
+        animales[1], animales[3]='loro', 'oso'
+        print(animales)
+    elif ejecricio_ejecutar == 5:
+        print('el ejercicio numero 5 recorre la lista y extrae el valor mas alto, en este caso 22, y luego usa el remove para eliminarlo de la lista numeros, y al final imprime la lista sin el 22')
+    elif ejecricio_ejecutar == 6:
+        lista=[]
+        for i in range(10, 31, 5):
+            lista.append(i)
+        print(lista[0])
+        print(lista[1])
+    elif ejecricio_ejecutar == 7:
+        autos = ["sedan", "polo", "suran", "gol"]
+        print(f'lista uno {autos}')
+        autos[1], autos[2] = 'wrx', 'sti'
+        print(f'lista dos {autos}')
+    elif ejecricio_ejecutar == 8:
+        dobles=[]
+        for i in range(5, 16, 5):
+            dobles.append(i * 2)
+        print(dobles)
+    elif ejecricio_ejecutar == 9:
+        compras = [["pan", "leche"], ["arroz", "fideos", "salsa"], ["agua"]] 
+        compras[2].append('jugo')
+        compras[1][1]=('tallarines')
+        compras[0].remove('pan')
+        print(compras)
+    elif ejecricio_ejecutar == 10:
+        lista_aninada=[15, True, [25.5, 57.9, 30.6], False]
+        print(lista_aninada)
+    elif ejecricio_ejecutar == 0:
+        break
+    else:
+        print('ingrese un ejercicio valido')
