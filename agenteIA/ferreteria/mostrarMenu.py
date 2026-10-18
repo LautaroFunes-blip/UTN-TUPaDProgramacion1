@@ -1,0 +1,13 @@
+def mostrarMenu():
+    print('====== ferreteria ======')
+    print('1 - registrar un producto')
+    print('2 - listar los productos')
+    print('3 - buscar un producto por codigo')
+    print('4 - registrar un cliente')
+    print('5 - listar los clientes')
+    print('6 - buscar un cliente por dni')
+    print('7 - realizar una venta')
+    print('8 - listar las ventas')
+    print('9 - calcular descuento de un monto')
+    print('10 - calcular vuelto')
+    print('0 - salir')

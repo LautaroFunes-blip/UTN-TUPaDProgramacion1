@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferreteria - Frontend simple</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f2f4f7;
+    color: #22303f;
+  }
+  header {
+    background: linear-gradient(135deg, #1f4e79, #2e75b6);
+    color: #fff;
+    padding: 22px 28px;
+  }
+  header h1 { margin: 0; font-size: 24px; }
+  header p { margin: 6px 0 0; opacity: .85; font-size: 14px; }
+  nav.tabs {
+    display: flex;
+    gap: 8px;
+    padding: 14px 28px 0;
+    background: #fff;
+    border-bottom: 1px solid #dde3ea;
+  }
+  nav.tabs button {
+    border: none;
+    background: transparent;
+    padding: 10px 18px;
+    font-size: 15px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: #55636f;
+  }
+  nav.tabs button.activo {
+    color: #1f4e79;
+    border-bottom-color: #1f4e79;
+    font-weight: 600;
+  }
+  main { padding: 22px 28px 60px; max-width: 1100px; margin: 0 auto; }
+  .vista { display: none; }
+  .vista.activa { display: block; }
+  .panel {
+    background: #fff;
+    border: 1px solid #dde3ea;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+  .panel h2 { margin: 0 0 14px; font-size: 17px; color: #1f4e79; }
+  input, select, button {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 9px 11px;
+    border: 1px solid #c7d0da;
+    border-radius: 6px;
+  }
+  form { display: flex; flex-wrap: wrap; gap: 10px; }
+  form input { flex: 1 1 150px; }
+  button {
+    background: #2e75b6;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  button:hover { background: #245d92; }
+  .fila { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #e8edf2; font-size: 14px; }
+  th { background: #f6f9fc; color: #55636f; }
+  tbody tr:hover { background: #f9fbfd; }
+  .vacio { color: #8a97a3; font-size: 14px; }
+  .totales { margin: 14px 0; font-size: 15px; }
+  .totales .destacado { font-weight: 700; color: #1f4e79; font-size: 18px; }
+  #aviso {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #22303f;
+    color: #fff;
+    padding: 11px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s;
+  }
+  #aviso.visible { opacity: .95; }
+  .quitar { background: #c0392b; padding: 5px 10px; }
+  .quitar:hover { background: #96281b; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔧 Ferreteria</h1>
+  <p>Frontend simple · corre 100% en el navegador, sin servidor ni dependencias</p>
+</header>
+
+<nav class="tabs">
+  <button class="activo" data-vista="productos">Productos</button>
+  <button data-vista="clientes">Clientes</button>
+  <button data-vista="ventas">Ventas</button>
+</nav>
+
+<main>
+  <!-- ================= PRODUCTOS ================= -->
+  <section id="vista-productos" class="vista activa">
+    <div class="panel">
+      <h2>Registrar producto</h2>
+      <form id="form-producto">
+        <input id="producto-codigo" placeholder="Codigo" required>
+        <input id="producto-nombre" placeholder="Nombre" required>
+        <input id="producto-categoria" placeholder="Categoria" required>
+        <input id="producto-precio" type="number" step="0.01" min="0" placeholder="Precio" required>
+        <input id="producto-stock" type="number" min="0" placeholder="Stock" required>
+        <button type="submit">Registrar</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2>Buscar producto por codigo</h2>
+      <form id="form-buscar-producto">
+        <input id="buscar-producto-codigo" placeholder="Codigo">
+        <button type="submit">Buscar</button>
+      </form>
+      <p id="resultado-producto" class="vacio"></p>
+    </div>
+
+    <div class="panel">
+      <h2>Productos en stock</h2>
+      <table id="tabla-productos">
+        <thead>
+          <tr><th>Codigo</th><th>Nombre</th><th>Categoria</th><th>Precio</th><th>Stock</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= CLIENTES ================= -->
+  <section id="vista-clientes" class="vista">
+    <div class="panel">
+      <h2>Registrar cliente</h2>
+      <form id="form-cliente">
+        <input id="cliente-nombre" placeholder="Nombre y apellido" required>
+        <input id="cliente-dni" type="number" min="0" placeholder="DNI" required>
+        <input id="cliente-telefono" placeholder="Telefono" required>
+        <button type="submit">Registrar</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2>Buscar cliente por DNI</h2>
+      <form id="form-buscar-cliente">
+        <input id="buscar-cliente-dni" type="number" min="0" placeholder="DNI">
+        <button type="submit">Buscar</button>
+      </form>
+      <p id="resultado-cliente" class="vacio"></p>
+    </div>
+
+    <div class="panel">
+      <h2>Clientes registrados</h2>
+      <table id="tabla-clientes">
+        <thead>
+          <tr><th>Nombre</th><th>DNI</th><th>Telefono</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= VENTAS ================= -->
+  <section id="vista-ventas" class="vista">
+    <div class="panel">
+      <h2>Nueva venta</h2>
+      <div class="fila">
+        <label for="venta-dni">DNI del cliente:</label>
+        <input id="venta-dni" type="number" min="0" placeholder="Vacio = cliente ocasional">
+      </div>
+      <div class="fila" style="margin-top:12px">
+        <select id="venta-producto"></select>
+        <input id="venta-cantidad" type="number" min="1" value="1">
+        <button id="btn-agregar-item" type="button">Agregar al carrito</button>
+      </div>
+
+      <table id="tabla-carrito">
+        <thead>
+          <tr><th>Producto</th><th>Cantidad</th><th>Subtotal</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="totales">
+        <div>Descuento (10% desde $50.000): <span id="venta-descuento">$0</span></div>
+        <div>Total a pagar: <span id="venta-total" class="destacado">$0</span></div>
+      </div>
+
+      <div class="fila">
+        <label for="venta-pago">Paga con:</label>
+        <input id="venta-pago" type="number" step="0.01" min="0" placeholder="Monto">
+        <span>Vuelto: <strong id="venta-vuelto">$0</strong></span>
+      </div>
+      <div class="fila" style="margin-top:14px">
+        <button id="btn-registrar-venta" type="button">Registrar venta</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Ventas realizadas</h2>
+      <table id="tabla-ventas">
+        <thead>
+          <tr><th>#</th><th>Cliente</th><th>Detalle</th><th>Descuento</th><th>Total</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<div id="aviso"></div>
+
+<script>
+/* =========================================================
+   CLASES  (espejo de ferreteria/Producto.py, Cliente.py,
+   ItemVenta.py y Venta.py)
+   ========================================================= */
+class Producto {
+  constructor(codigo, nombre, categoria, precio, stock) {
+    this.codigo = codigo;
+    this.nombre = nombre;
+    this.categoria = categoria;
+    this.precio = precio;
+    this.stock = stock;
+  }
+  hayStock(cantidad) { return cantidad <= this.stock; }
+  reducirStock(cantidad) { this.stock = this.stock - cantidad; }
+  aumentarStock(cantidad) { this.stock = this.stock + cantidad; }
+}
+
+class Cliente {
+  constructor(nombre, dni, telefono) {
+    this.nombre = nombre;
+    this.dni = dni;
+    this.telefono = telefono;
+  }
+}
+
+class ItemVenta {
+  constructor(producto, cantidad) {
+    this.producto = producto;
+    this.cantidad = cantidad;
+  }
+  calcularSubtotal() { return this.producto.precio * this.cantidad; }
+}
+
+class Venta {
+  constructor(cliente) {
+    this.cliente = cliente;
+    this.items = [];
+    this.descuento = 0;
+  }
+  agregarItem(item) { this.items.push(item); }
+  calcularTotal() {
+    let total = 0;
+    for (const item of this.items) {
+      total = total + item.calcularSubtotal();
+    }
+    return total - this.descuento;
+  }
+}
+
+/* =========================================================
+   FUNCIONES  (espejo de cada archivo de ferreteria/)
+   ========================================================= */
+function buscarProducto(inventario, codigo) {
+  for (const producto of inventario) {
+    if (producto.codigo === codigo) return producto;
+  }
+  return null;
+}
+
+function buscarCliente(clientes, dni) {
+  for (const cliente of clientes) {
+    if (cliente.dni === dni) return cliente;
+  }
+  return null;
+}
+
+function calcularDescuento(total) {
+  if (total >= 50000) return total * 0.10;
+  return 0;
+}
+
+function calcularVuelto(total, pago) { return pago - total; }
+
+function cargarDatosIniciales(inventario, clientes) {
+  inventario.push(new Producto('A01', 'Martillo', 'Herramientas', 8500, 10));
+  inventario.push(new Producto('A02', 'Destornillador', 'Herramientas', 3200, 25));
+  inventario.push(new Producto('B01', 'Tornillos x100', 'Fijaciones', 4500, 40));
+  inventario.push(new Producto('C01', 'Pintura Blanca 4L', 'Pinturas', 18000, 8));
+  clientes.push(new Cliente('Juan Perez', 30111222, '221-5551234'));
+  clientes.push(new Cliente('Maria Gomez', 28999888, '221-5559876'));
+}
+
+/* =========================================================
+   ESTADO + PERSISTENCIA (localStorage)
+   ========================================================= */
+const inventario = [];
+const clientes = [];
+const ventas = [];
+let carrito = [];
+const CLAVE = 'ferreteria-datos';
+
+function guardarDatos() {
+  const datos = {
+    inventario: inventario.map(p => ({ ...p })),
+    clientes: clientes.map(c => ({ ...c })),
+    ventas: ventas.map(v => ({
+      clienteNombre: v.cliente ? v.cliente.nombre : 'cliente ocasional',
+      descuento: v.descuento,
+      total: v.calcularTotal(),
+      items: v.items.map(i => ({ nombre: i.producto.nombre, cantidad: i.cantidad, subtotal: i.calcularSubtotal() }))
+    }))
+  };
+  try { localStorage.setItem(CLAVE, JSON.stringify(datos)); } catch (e) { /* sin persistencia */ }
+}
+
+function cargarDatos() {
+  let datos = null;
+  try { datos = JSON.parse(localStorage.getItem(CLAVE)); } catch (e) { datos = null; }
+  if (!datos) {
+    cargarDatosIniciales(inventario, clientes);
+    return;
+  }
+  for (const p of datos.inventario) {
+    inventario.push(new Producto(p.codigo, p.nombre, p.categoria, p.precio, p.stock));
+  }
+  for (const c of datos.clientes) {
+    clientes.push(new Cliente(c.nombre, c.dni, c.telefono));
+  }
+}
+
+/* =========================================================
+   UTILIDADES DE INTERFAZ
+   ========================================================= */
+const plata = n => '$' + Number(n).toLocaleString('es-AR', { maximumFractionDigits: 2 });
+let temporizadorAviso = null;
+
+function aviso(mensaje) {
+  const el = document.getElementById('aviso');
+  el.textContent = mensaje;
+  el.classList.add('visible');
+  clearTimeout(temporizadorAviso);
+  temporizadorAviso = setTimeout(() => el.classList.remove('visible'), 2200);
+}
+
+/* =========================================================
+   RENDERIZADO
+   ========================================================= */
+function listarProductos() {
+  const cuerpo = document.querySelector('#tabla-productos tbody');
+  cuerpo.innerHTML = '';
+  if (inventario.length === 0) {
+    cuerpo.innerHTML = '<tr><td colspan="5" class="vacio">No hay productos cargados.</td></tr>';
+  }
+  for (const p of inventario) {
+    const fila = document.createElement('tr');
+    fila.innerHTML = `<td>${p.codigo}</td><td>${p.nombre}</td><td>${p.categoria}</td>
+                      <td>${plata(p.precio)}</td><td>${p.stock}</td>`;
+    cuerpo.appendChild(fila);
+  }
+  refrescarSelectProductos();
+}
+
+function listarClientes() {
+  const cuerpo = document.querySelector('#tabla-clientes tbody');
+  cuerpo.innerHTML = '';
+  if (clientes.length === 0) {
+    cuerpo.innerHTML = '<tr><td colspan="3" class="vacio">No hay clientes cargados.</td></tr>';
+  }
+  for (const c of clientes) {
+    const fila = document.createElement('tr');
+    fila.innerHTML = `<td>${c.nombre}</td><td>${c.dni}</td><td>${c.telefono}</td>`;
+    cuerpo.appendChild(fila);
+  }
+}
+
+function listarVentas() {
+  const cuerpo = document.querySelector('#tabla-ventas tbody');
+  cuerpo.innerHTML = '';
+  if (ventas.length === 0) {
+    cuerpo.innerHTML = '<tr><td colspan="5" class="vacio">Todavia no se registraron ventas.</td></tr>';
+    return;
+  }
+  ventas.forEach((venta, indice) => {
+    const nombreCliente = venta.cliente ? venta.cliente.nombre : 'cliente ocasional';
+    const detalle = venta.items
+      .map(i => `${i.cantidad} x ${i.producto.nombre}`)
+      .join('<br>');
+    const fila = document.createElement('tr');
+    fila.innerHTML = `<td>${indice + 1}</td><td>${nombreCliente}</td><td>${detalle}</td>
+                      <td>${plata(venta.descuento)}</td><td>${plata(venta.calcularTotal())}</td>`;
+    cuerpo.appendChild(fila);
+  });
+}
+
+function refrescarSelectProductos() {
+  const select = document.getElementById('venta-producto');
+  const elegido = select.value;
+  select.innerHTML = '';
+  for (const p of inventario) {
+    const opcion = document.createElement('option');
+    opcion.value = p.codigo;
+    opcion.textContent = `${p.codigo} - ${p.nombre} (${plata(p.precio)} · stock ${p.stock})`;
+    select.appendChild(opcion);
+  }
+  if (elegido) select.value = elegido;
+}
+
+function renderCarrito() {
+  const cuerpo = document.querySelector('#tabla-carrito tbody');
+  cuerpo.innerHTML = '';
+  if (carrito.length === 0) {
+    cuerpo.innerHTML = '<tr><td colspan="4" class="vacio">El carrito esta vacio.</td></tr>';
+  }
+  carrito.forEach((item, indice) => {
+    const fila = document.createElement('tr');
+    fila.innerHTML = `<td>${item.producto.nombre}</td><td>${item.cantidad}</td>
+                      <td>${plata(item.calcularSubtotal())}</td>`;
+    const celdaBoton = document.createElement('td');
+    const boton = document.createElement('button');
+    boton.textContent = 'Quitar';
+    boton.className = 'quitar';
+    boton.addEventListener('click', () => {
+      carrito.splice(indice, 1);
+      renderCarrito();
+      actualizarTotales();
+    });
+    celdaBoton.appendChild(boton);
+    fila.appendChild(celdaBoton);
+    cuerpo.appendChild(fila);
+  });
+  actualizarTotales();
+}
+
+function actualizarTotales() {
+  let subtotal = 0;
+  for (const item of carrito) subtotal = subtotal + item.calcularSubtotal();
+  const descuento = calcularDescuento(subtotal);
+  const total = subtotal - descuento;
+  document.getElementById('venta-descuento').textContent = plata(descuento);
+  document.getElementById('venta-total').textContent = plata(total);
+  const pago = parseFloat(document.getElementById('venta-pago').value);
+  const vuelto = isNaN(pago) ? 0 : calcularVuelto(total, pago);
+  document.getElementById('venta-vuelto').textContent = plata(vuelto);
+}
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+function registrarProducto(evento) {
+  evento.preventDefault();
+  const codigo = document.getElementById('producto-codigo').value.trim();
+  if (buscarProducto(inventario, codigo) !== null) {
+    aviso('Ya existe un producto con ese codigo');
+    return;
+  }
+  const nombre = document.getElementById('producto-nombre').value.trim();
+  const categoria = document.getElementById('producto-categoria').value.trim();
+  const precio = parseFloat(document.getElementById('producto-precio').value);
+  const stock = parseInt(document.getElementById('producto-stock').value, 10);
+  inventario.push(new Producto(codigo, nombre, categoria, precio, stock));
+  document.getElementById('form-producto').reset();
+  listarProductos();
+  guardarDatos();
+  aviso('Producto registrado');
+}
+
+function registrarCliente(evento) {
+  evento.preventDefault();
+  const dni = parseInt(document.getElementById('cliente-dni').value, 10);
+  if (buscarCliente(clientes, dni) !== null) {
+    aviso('Ya existe un cliente con ese DNI');
+    return;
+  }
+  const nombre = document.getElementById('cliente-nombre').value.trim();
+  const telefono = document.getElementById('cliente-telefono').value.trim();
+  clientes.push(new Cliente(nombre, dni, telefono));
+  document.getElementById('form-cliente').reset();
+  listarClientes();
+  guardarDatos();
+  aviso('Cliente registrado');
+}
+
+function agregarItem() {
+  const codigo = document.getElementById('venta-producto').value;
+  const cantidad = parseInt(document.getElementById('venta-cantidad').value, 10);
+  const producto = buscarProducto(inventario, codigo);
+  if (producto === null) { aviso('Elija un producto'); return; }
+  if (isNaN(cantidad) || cantidad <= 0) { aviso('La cantidad debe ser mayor a cero'); return; }
+  const yaEnCarrito = carrito.filter(i => i.producto.codigo === codigo)
+                             .reduce((suma, i) => suma + i.cantidad, 0);
+  if (!producto.hayStock(cantidad + yaEnCarrito)) {
+    aviso(`Solo hay ${producto.stock} unidades disponibles`);
+    return;
+  }
+  carrito.push(new ItemVenta(producto, cantidad));
+  document.getElementById('venta-cantidad').value = 1;
+  renderCarrito();
+}
+
+function registrarVenta() {
+  if (carrito.length === 0) { aviso('El carrito esta vacio'); return; }
+  const dni = parseInt(document.getElementById('venta-dni').value, 10);
+  let cliente = null;
+  if (!isNaN(dni) && dni !== 0) {
+    cliente = buscarCliente(clientes, dni);
+    if (cliente === null) {
+      aviso('El cliente no esta registrado, se toma como ocasional');
+    }
+  }
+  for (const item of carrito) {
+    if (!item.producto.hayStock(item.cantidad)) {
+      aviso(`Sin stock suficiente de ${item.producto.nombre}`);
+      return;
+    }
+  }
+  const venta = new Venta(cliente);
+  for (const item of carrito) {
+    venta.agregarItem(item);
+    item.producto.reducirStock(item.cantidad);
+  }
+  venta.descuento = calcularDescuento(venta.calcularTotal());
+  ventas.push(venta);
+
+  aviso(`Venta registrada. Total: ${plata(venta.calcularTotal())}`);
+
+  carrito = [];
+  document.getElementById('venta-dni').value = '';
+  document.getElementById('venta-pago').value = '';
+  renderCarrito();
+  listarVentas();
+  listarProductos();
+  guardarDatos();
+}
+
+/* =========================================================
+   EVENTOS
+   ========================================================= */
+document.querySelectorAll('nav.tabs button').forEach(boton => {
+  boton.addEventListener('click', () => {
+    document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('activo'));
+    document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
+    boton.classList.add('activo');
+    document.getElementById('vista-' + boton.dataset.vista).classList.add('activa');
+  });
+});
+
+document.getElementById('form-producto').addEventListener('submit', registrarProducto);
+document.getElementById('form-cliente').addEventListener('submit', registrarCliente);
+
+document.getElementById('form-buscar-producto').addEventListener('submit', evento => {
+  evento.preventDefault();
+  const codigo = document.getElementById('buscar-producto-codigo').value.trim();
+  const producto = buscarProducto(inventario, codigo);
+  const salida = document.getElementById('resultado-producto');
+  if (producto === null) {
+    salida.textContent = 'No se encontro ningun producto con ese codigo';
+    salida.className = 'vacio';
+  } else {
+    salida.textContent = `${producto.codigo} - ${producto.nombre} (${producto.categoria}) · ${plata(producto.precio)} · stock ${producto.stock}`;
+    salida.className = '';
+  }
+});
+
+document.getElementById('form-buscar-cliente').addEventListener('submit', evento => {
+  evento.preventDefault();
+  const dni = parseInt(document.getElementById('buscar-cliente-dni').value, 10);
+  const cliente = buscarCliente(clientes, dni);
+  const salida = document.getElementById('resultado-cliente');
+  if (cliente === null) {
+    salida.textContent = 'No se encontro ningun cliente con ese DNI';
+    salida.className = 'vacio';
+  } else {
+    salida.textContent = `${cliente.nombre} - DNI ${cliente.dni} - tel: ${cliente.telefono}`;
+    salida.className = '';
+  }
+});
+
+document.getElementById('btn-agregar-item').addEventListener('click', agregarItem);
+document.getElementById('btn-registrar-venta').addEventListener('click', registrarVenta);
+document.getElementById('venta-pago').addEventListener('input', actualizarTotales);
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+cargarDatos();
+listarProductos();
+listarClientes();
+listarVentas();
+renderCarrito();
+</script>
+</body>
+</html>

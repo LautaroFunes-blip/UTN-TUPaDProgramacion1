@@ -51,8 +51,7 @@ def salir():
 funcion=None
 leerMostrar()
 while True:
-    funcion=input('ingrese el numero de la funcion que desea realizar \n' \
-    '1:agregar producto, \n2:buscar productos \n3:salir')
+    funcion=input('ingrese el numero de la funcion que desea realizar \n''1:agregar producto, \n2:buscar productos \n3:salir')
     try:
         funcion=(int(funcion))
         if funcion == 1:
