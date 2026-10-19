@@ -10,9 +10,8 @@ while True:
             for celda in practica1.celdasMatriz:
                 print(celda.fila, celda.columna, celda.valor)
         elif actividad==2:
-            funcion2=CargarNotas.CargarNotas()
-            funcionFinal=funcion2.cargarAlumnosNotas()
-            print(funcionFinal)
-
+            cargar=CargarNotas.CargarNotas()
+            cargar.main()
+            print('false')
     except ValueError:
         print('ingrese solo el nmero de la actividad')
